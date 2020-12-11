@@ -11,3 +11,16 @@
 ## 2. 对应文章
 
 [libco 协程库学习，测试连接 mysql](https://wenfh2020.com/2020/12/07/libco-learnning/)
+
+---
+
+## 3. 使用
+
+使用测试 demo 前，根据自己的需要修改 `test_libco.cpp` 文件里的 mysql 的连接信息，还有查询语句。
+
+```shell
+git clone https://github.com/wenfh2020/test_libco.git
+cd test_libco
+make clean; make
+./test_libco [co_cnt] [co_query_cnt]
+```
