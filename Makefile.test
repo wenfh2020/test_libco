@@ -1,0 +1,36 @@
+CC = gcc
+CXX = g++
+CFLAGS = -g -O0 -Wall -m64 -fPIC -pipe
+CXXFLAG = -std=c++11 -g -O0 -Wall -fPIC -pipe -Wno-unused-function -Wno-noexcept-type -m64 -D_GNU_SOURCE=1 -D_REENTRANT
+CUR_DIR = $(notdir $(shell pwd))
+
+DIRS = .
+INC := $(INC) \
+        -I . \
+        -I ./libco
+
+LDFLAGS := $(LDFLAGS) \
+        -L ./libco/lib \
+        -lcolib -lmysqlclient -lpthread 
+
+C_SRCS = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
+CPP_SRCS = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.cpp))
+OBJS = $(patsubst %.cpp,%.o,$(CPP_SRCS)) $(patsubst %.c,%.o,$(C_SRCS))
+
+PROC_NAME = $(CUR_DIR)
+
+.PHONY: clean
+
+$(PROC_NAME): $(OBJS)
+	$(CXX) $(CXXFLAG) -o $@ $(OBJS) $(INC) $(LDFLAGS)
+
+%.o:%.cpp
+	$(CXX) $(CXXFLAG) $(INC) -c -o $@ $<
+%.o:%.cc
+	$(CXX) $(CXXFLAG) $(INC) -c -o $@ $<
+%.o:%.c
+	$(CC) $(CFLAGS) $(INC)  -c -o $@ $<
+
+clean:
+	rm -f $(OBJS)
+	rm -f $(PROC_NAME)
