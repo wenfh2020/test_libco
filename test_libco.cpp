@@ -34,7 +34,7 @@ double time_now() {
     return ((tv).tv_sec + (tv).tv_usec * 1e-6);
 }
 
-void show_error(MYSQL* mysql) {
+void show_mysql_error(MYSQL* mysql) {
     printf("error: %d, errstr: %s\n", mysql_errno(mysql), mysql_error(mysql));
 }
 
@@ -86,7 +86,7 @@ void* co_handler_mysql_query(void* arg) {
                 "mysql",
                 db->port,
                 NULL, 0)) {
-            show_error(task->mysql);
+            show_mysql_error(task->mysql);
             return nullptr;
         }
     }
@@ -98,7 +98,7 @@ void* co_handler_mysql_query(void* arg) {
         /* select mysql. */
         query = "select * from mytest.test_async_mysql where id = 1;";
         if (mysql_real_query(task->mysql, query, strlen(query))) {
-            show_error(task->mysql);
+            show_mysql_error(task->mysql);
             return nullptr;
         }
 
@@ -125,7 +125,7 @@ void* co_handler_mysql_query(void* arg) {
 
 int main(int argc, char** argv) {
     if (argc < 3) {
-        printf("pls: ./test_libco [co_cnt] [query_cnt]\n");
+        printf("pls: ./test_libco [co_cnt] [co_query_cnt]\n");
         return -1;
     }
 
@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
     g_co_cnt = atoi(argv[1]);
     g_co_query_cnt = atoi(argv[2]);
     g_begin_time = time_now();
-    db = new db_t{"127.0.0.1", 3306, "root", "root123!@#", "utf8mb4"};
+    db = new db_t{"127.0.0.1", 3306, "topnews", "topnews2016", "utf8mb4"};
 
     for (i = 0; i < g_co_cnt; i++) {
         task = new task_t{i, db, nullptr, nullptr};

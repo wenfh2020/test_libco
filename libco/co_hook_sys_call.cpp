@@ -795,9 +795,10 @@ int gethostbyname_r(const char *__restrict name,
                     int *__restrict __h_errnop) {
     HOOK_SYS_FUNC(gethostbyname_r);
 
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
-    return g_sys_gethostbyname_r_func(name);
-#else
+    /* 因为 macos 编译不通过，将编译宏注释掉了，2020-12-11 */
+    // #if defined(__APPLE__) || defined(__FreeBSD__)
+    //     return g_sys_gethostbyname_r_func(name);
+    // #else
     if (!co_is_enable_sys_hook()) {
         return g_sys_gethostbyname_r_func(name, __result_buf, __buf, __buflen,
                                           __result, __h_errnop);
@@ -805,7 +806,7 @@ int gethostbyname_r(const char *__restrict name,
 
     return co_gethostbyname_r(name, __result_buf, __buf, __buflen, __result,
                               __h_errnop);
-#endif
+    // #endif
 }
 
 struct res_state_wrap {

@@ -1,5 +1,5 @@
-LIBCO_DIR = libco
 TEST_DIR = $(shell pwd)
+LIBCO_DIR = $(TEST_DIR)/libco
 
 .PHONY : build
 

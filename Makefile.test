@@ -11,7 +11,7 @@ INC := $(INC) \
 
 LDFLAGS := $(LDFLAGS) \
         -L ./libco/lib \
-        -lcolib -lmysqlclient -lpthread 
+        -lcolib -lmysqlclient -lpthread -ldl
 
 C_SRCS = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
 CPP_SRCS = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.cpp))
