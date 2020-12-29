@@ -53,10 +53,12 @@ struct rpchook_t {
     struct timeval read_timeout;
     struct timeval write_timeout;
 };
+
 static inline pid_t GetPid() {
     char **p = (char **)pthread_self();
     return p ? *(pid_t *)(p + 18) : getpid();
 }
+
 static rpchook_t *g_rpchook_socket_fd[102400] = {0};
 
 typedef int (*socket_pfn_t)(int domain, int type, int protocol);
@@ -176,6 +178,7 @@ static inline rpchook_t *get_by_fd(int fd) {
     }
     return NULL;
 }
+
 static inline rpchook_t *alloc_by_fd(int fd) {
     if (fd > -1 && fd < (int)sizeof(g_rpchook_socket_fd) / (int)sizeof(g_rpchook_socket_fd[0])) {
         rpchook_t *lp = (rpchook_t *)calloc(1, sizeof(rpchook_t));
@@ -186,6 +189,7 @@ static inline rpchook_t *alloc_by_fd(int fd) {
     }
     return NULL;
 }
+
 static inline void free_by_fd(int fd) {
     if (fd > -1 && fd < (int)sizeof(g_rpchook_socket_fd) / (int)sizeof(g_rpchook_socket_fd[0])) {
         rpchook_t *lp = g_rpchook_socket_fd[fd];
@@ -196,6 +200,7 @@ static inline void free_by_fd(int fd) {
     }
     return;
 }
+
 int socket(int domain, int type, int protocol) {
     HOOK_SYS_FUNC(socket);
 
@@ -223,6 +228,7 @@ int co_accept(int fd, struct sockaddr *addr, socklen_t *len) {
     alloc_by_fd(cli);
     return cli;
 }
+
 int connect(int fd, const struct sockaddr *address, socklen_t address_len) {
     HOOK_SYS_FUNC(connect);
 
@@ -239,6 +245,7 @@ int connect(int fd, const struct sockaddr *address, socklen_t address_len) {
     if (sizeof(lp->dest) >= address_len) {
         memcpy(&(lp->dest), address, (int)address_len);
     }
+
     if (O_NONBLOCK & lp->user_flag) {
         return ret;
     }
@@ -251,8 +258,8 @@ int connect(int fd, const struct sockaddr *address, socklen_t address_len) {
     int pollret = 0;
     struct pollfd pf = {0};
 
-    for (int i = 0; i < 3; i++)  //25s * 3 = 75s
-    {
+    for (int i = 0; i < 3; i++) {
+        //25s * 3 = 75s
         memset(&pf, 0, sizeof(pf));
         pf.fd = fd;
         pf.events = (POLLOUT | POLLERR | POLLHUP);
@@ -296,6 +303,7 @@ int close(int fd) {
 
     return ret;
 }
+
 ssize_t read(int fd, void *buf, size_t nbyte) {
     HOOK_SYS_FUNC(read);
 

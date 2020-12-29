@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "co_routine.h"
+#include "./libco/co_routine.h"
 
 int g_co_cnt = 0;
 int g_co_query_cnt = 0;
@@ -58,6 +58,7 @@ int show_mysql_query_data(MYSQL* mysql, MYSQL_RES* res) {
         }
         printf("\n");
     }
+    printf("----------\n");
 
     return row_cnt;
 }
@@ -123,6 +124,10 @@ void* co_handler_mysql_query(void* arg) {
     return nullptr;
 }
 
+void* test_co(void* arg) {
+    printf("hello world\n");
+}
+
 int main(int argc, char** argv) {
     if (argc < 3) {
         printf("pls: ./test_libco [co_cnt] [co_query_cnt]\n");
@@ -141,6 +146,7 @@ int main(int argc, char** argv) {
     for (i = 0; i < g_co_cnt; i++) {
         task = new task_t{i, db, nullptr, nullptr};
         co_create(&(task->co), NULL, co_handler_mysql_query, task);
+        // co_create(&(task->co), NULL, test_co, task);
         co_resume(task->co);
     }
 

@@ -45,7 +45,7 @@ coctx_swap:
 	ret
 
 #elif defined(__x86_64__)
-	leaq (%rsp),%rax
+    leaq (%rsp),%rax
     movq %rax, 104(%rdi)
     movq %rbx, 96(%rdi)
     movq %rcx, 88(%rdi)
@@ -79,5 +79,5 @@ coctx_swap:
 		pushq 72(%rsi)
 
     movq 64(%rsi), %rsi
-	ret
+    ret
 #endif
